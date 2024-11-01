@@ -13,6 +13,10 @@ void criptografa(char senha[100][50], char cripto[100][200]);
 void erroo(char senha[20], char confirmacao[20]);
 void lista(char usuario[100][50],char senha[100][50],char cripto[100][200]);
 void alterusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[50],int escolhausuario);  
+void exclusu(char usuario[100][50], char senha[100][50], char cripto[100][200],int escolhausuario);
+//=======FUNC-TXT=============================================================================================================================================================================
+void salvaUsuarios(char usuario[100][50], char senha[100][50]);
+void carregaUsuarios(char usuario[100][50], char senha[100][50], char cripto[100][200]);
 //=======DEFINE=FUNC-SECUNDARIAS==============================================================================================================================================================
 int compespc(char ch);
 int compnum(char ch);
@@ -25,6 +29,8 @@ int main() {
     int escolhausuario,soun=0;
 
     system("cls");
+    carregaUsuarios(usuario, senha,cripto);
+
     while (escolha[0] != 's') {
         printf("------Bem vindo!------\n\nO que deseja fazer?\n\n1 - Inclusao de Usuarios\n2 - Alterar Usuarios\n3 - Exclusao de Usuarios\n4 - Listagem de Usuarios\ns - Sair\n");
         fgets(escolha, sizeof(escolha), stdin);
@@ -35,9 +41,10 @@ int main() {
                 criptografa(senha, cripto);
                 break;
             case '2':
+               
                do {
                     system("cls");
-                    printf("--------------------------------\n| Qual usuario deseja alterar? |\n--------------------------------\n");
+                    printf("--------------------------------\n| Qual usuario deseja ALTERAR? |\n--------------------------------\n");
                     lista(usuario, senha, cripto);
                     scanf("%d", &escolhausuario);
                     if (escolhausuario < 1 || escolhausuario > nsenhas) {
@@ -47,7 +54,7 @@ int main() {
                     }
 
                     system("cls");
-                    printf("--------------------------------\n| Qual usuario deseja alterar? |\n--------------------------------\n");
+                    printf("--------------------------------\n| Qual usuario deseja ALTERAR? |\n--------------------------------\n");
                     printf("Usuario escolhido: %d - (%s)\nConfirmar escolha?\n1 - Sim\n2 - Nao\n", escolhausuario, usuario[escolhausuario - 1]);
                     scanf("%d", &soun);
                     system("cls"); 
@@ -56,11 +63,30 @@ int main() {
                 alterusuario(usuario, senha, senhaconfirma, escolhausuario);
                 criptografa(senha, cripto);
 
-                escolhausuario = 0;  // Reseta a variável
+                escolhausuario = 0; //reseta variavel.
                     
                 break;
             case '3':
-                //
+                escolhausuario=0;//resetando novamente para evitar erros.
+                soun=0;
+                do{
+                
+                printf("--------------------------------\n| Qual usuario deseja EXCLUIR? |\n--------------------------------\n");
+                lista(usuario, senha, cripto);
+                scanf("%d", &escolhausuario);
+                system("cls");
+    
+                printf("Usuario escolhido: %d - (%s)\nConfirmar escolha?\n1 - Sim\n2 - Nao\n", escolhausuario, usuario[escolhausuario - 1]);
+                scanf("%d", &soun);
+                system("cls"); 
+                if(soun==1){
+                    exclusu(usuario,senha,cripto,escolhausuario);
+                }
+                
+                } while (soun != 1);
+
+                
+
                 break;
             case '4':
                 system("cls");
@@ -91,6 +117,43 @@ int compespc(char ch) { // verificar se tem carac especial
 int completra(char ch){// verificar se tem letra (funcao isalpha ve se tem caracter de A a Z na string)
     return isalpha(ch); } 
 //============================================================================================================================================================================================
+void salvaUsuarios(char usuario[100][50], char senha[100][50]) {
+    FILE *file = fopen("usuarios.txt", "w");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return;
+    }
+    
+    for (int i = 0; i < nsenhas; i++) {
+        fprintf(file, "%s %s\n", usuario[i], senha[i]);
+    }
+    
+    fclose(file);
+}
+
+void carregaUsuarios(char usuario[100][50], char senha[100][50], char cripto[100][200]) {
+    FILE *file = fopen("usuarios.txt", "r");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    
+    nsenhas = 0;
+
+    //Ler usuarios e senhasd
+    while (fscanf(file, "%49s %49s", usuario[nsenhas], senha[nsenhas]) == 2) {
+        criptografa(senha[nsenhas], cripto[nsenhas]); 
+        nsenhas++;
+        if (nsenhas >= 100) {
+            printf("Limite de usuarios atingido!\n");
+            break;
+        }
+    }
+
+    fclose(file);
+}
+
 void erroo(char senha[20], char confirmacao[20]) {// funcao paraa verificar TODOS os possiveis erros
     erro = 0; //reseta erro
 
@@ -165,6 +228,9 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
         printf("\nUsuario incluido com sucesso!");
         system("cls");
         nsenhas++;
+
+        salvaUsuarios(usuario, senha);
+
         printf("\nDeseja incluir mais usuarios?\n1 - Sim\n2 - Nao\n");
         scanf("%d", &simounao);
         getchar();
@@ -176,11 +242,11 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
 
 void lista(char usuario[100][50],char senha[100][50],char cripto[100][200]){ //funcao para listar usuarios
     for (int i = 0; i < nsenhas; i++) {
-        printf("\n-------------------------------------------------------\n");
+        printf("\n--------------------------------------------------------------------------------\n");
         printf("%d - Usuario: %s\n", i+1,usuario[i]);
         printf("     Senha: %s\n", senha[i]);
         printf("     Criptografada: %s\n", cripto[i]);
-        printf("-------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------------------\n");
         }
 }
 
@@ -211,6 +277,8 @@ void alterusuario(char usuario[100][50], char senha[100][50], char senhaconfirma
         system("cls");
     } while (erro != 0);
 
+    salvaUsuarios(usuario, senha);
+
     printf("\nUsuario alterado com sucesso!");
     printf("\n\nPressione Enter para continuar...");
     getchar();
@@ -219,7 +287,31 @@ void alterusuario(char usuario[100][50], char senha[100][50], char senhaconfirma
     
 }
 
-void criptografa(char senha[100][50], char cripto[100][200]) {
+void exclusu(char usuario[100][50], char senha[100][50], char cripto[100][200], int escolhausuario) {
+    escolhausuario = escolhausuario - 1;
+
+    if (escolhausuario >= nsenhas || escolhausuario < 0) {
+        printf("Usuario escolhido inválido\n");
+        return;
+    }
+
+    for (int i = escolhausuario; i < nsenhas - 1; i++) {
+        strcpy(usuario[i], usuario[i + 1]);
+        strcpy(senha[i], senha[i + 1]);
+        strcpy(cripto[i], cripto[i + 1]);
+    }
+
+    // Clear the last user data
+    usuario[nsenhas - 1][0] = '\0';
+    senha[nsenhas - 1][0] = '\0';
+    cripto[nsenhas - 1][0] = '\0';
+
+    nsenhas--; 
+    salvaUsuarios(usuario, senha); 
+    printf("Usuario excluido com sucesso!\n");
+}
+
+void criptografa(char senha[100][50], char cripto[100][200]) {//criptografia
     for (int i = 0; i < nsenhas; i++) {
         cripto[i][0] = '\0';
         int x = 0;
