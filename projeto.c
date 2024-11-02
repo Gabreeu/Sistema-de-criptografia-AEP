@@ -10,7 +10,7 @@ int erro = 0;
 //=======DEFINE=FUNC-PRINCIPAIS===============================================================================================================================================================
 void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[50]);
 void criptografa(char senha[100][50], char cripto[100][200]);
-void erroo(char senha[20], char confirmacao[20]);
+void erroo(char senha[50], char confirmacao[50]);
 void lista(char usuario[100][50],char senha[100][50],char cripto[100][200]);
 void alterusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[50],int escolhausuario);  
 void exclusu(char usuario[100][50], char senha[100][50], char cripto[100][200],int escolhausuario);
@@ -114,8 +114,13 @@ int compespc(char ch) { // verificar se tem carac especial
     }
     return 0;
 }
-int completra(char ch){// verificar se tem letra (funcao isalpha ve se tem caracter de A a Z na string)
-    return isalpha(ch); } 
+int completra(char ch){// verificar se tem letra maiuscula 
+    char LetraM[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int j = 0; j < strlen(LetraM); j++) {
+        if (ch == LetraM[j]) return 1;
+    }
+    return 0;
+    } 
 //============================================================================================================================================================================================
 void salvaUsuarios(char usuario[100][50], char senha[100][50]) {
     FILE *file = fopen("usuarios.txt", "w");
@@ -154,10 +159,10 @@ void carregaUsuarios(char usuario[100][50], char senha[100][50], char cripto[100
     fclose(file);
 }
 
-void erroo(char senha[20], char confirmacao[20]) {// funcao paraa verificar TODOS os possiveis erros
+void erroo(char senha[50], char confirmacao[50]) {// funcao paraa verificar TODOS os possiveis erros
     erro = 0; //reseta erro
 
-    int temEspecial = 0, temNumero = 0, temLetra = 0;
+    int temEspecial = 0, temNumero = 0, temLetram = 0;
     for (int x = 0; senha[x] != '\0'; x++) {
         if (senha[x] == ' ') { // ve se tem espaços
             erro = 1;
@@ -166,7 +171,7 @@ void erroo(char senha[20], char confirmacao[20]) {// funcao paraa verificar TODO
         }
         if (compespc(senha[x])) temEspecial = 1;
         if (compnum(senha[x])) temNumero = 1;
-        if (completra(senha[x])) temLetra = 1;
+        if (completra(senha[x])) temLetram = 1;
     }
 
     
@@ -180,9 +185,9 @@ void erroo(char senha[20], char confirmacao[20]) {// funcao paraa verificar TODO
         printf("\nA senha deve conter pelo menos um numero.\n");
         printf("Pressione Enter para continuar...");
         getchar();
-    } else if (!temLetra) {//se nn tiver letra
+    } else if (!temLetram) {//se nn tiver letra
         erro = 1;
-        printf("\nA senha deve conter pelo menos uma letra.\n");
+        printf("\nA senha deve conter pelo menos uma letra maiuscula.\n");
         printf("Pressione Enter para continuar...");
         getchar();
     } else if (strcmp(senha, confirmacao) != 0) {//se senha!=confirmacao
@@ -202,12 +207,28 @@ void erroo(char senha[20], char confirmacao[20]) {// funcao paraa verificar TODO
 void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[50]) {
     int simounao;
     int i = nsenhas;
-
+    int e,x;
     do {
+        do { 
+        e = 0;  
         printf("\nUsuario: ");
         fgets(usuario[i], sizeof(usuario[i]), stdin);
         usuario[i][strcspn(usuario[i], "\n")] = '\0';
-        system("cls");
+
+        for (x = i - 1; x > -1; x--) {
+            if (strcmp(usuario[i], usuario[x]) == 0) {
+                printf("\nUsuario já existente.\n");
+                printf("Pressione Enter para continuar...");
+                getchar();
+                e = 1;
+                system("cls");
+            }
+        }
+    } while (e == 1);
+               
+
+
+        
         do {
             printf("\nUsuario: %s",usuario[i]);
             erro = 0; // Reseta erro
