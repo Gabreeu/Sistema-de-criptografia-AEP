@@ -217,13 +217,14 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
 
         for (x = i - 1; x > -1; x--) {
             if (strcmp(usuario[i], usuario[x]) == 0) {
-                printf("\nUsuario já existente.\n");
+                printf("\nUsuario ja existe.\n");
                 printf("Pressione Enter para continuar...");
                 getchar();
                 e = 1;
                 system("cls");
             }
         }
+        system("cls");
     } while (e == 1);
                
 
@@ -333,9 +334,25 @@ void exclusu(char usuario[100][50], char senha[100][50], char cripto[100][200], 
 }
 
 void criptografa(char senha[100][50], char cripto[100][200]) {//criptografia
+    
     for (int i = 0; i < nsenhas; i++) {
+        char reserva[50];  
+        int tam = strlen(senha[i]);
+        
+        
+        for (int y = 0; y < tam; y++) {
+            reserva[y] = senha[i][tam - 1 - y];  
+        }
+        reserva[tam] = '\0';  
+
+        
+        strcpy(senha[i], reserva);
+
+        
         cripto[i][0] = '\0';
-        int x = 0;
+
+        int x=0;
+
         while (senha[i][x] != '\0') {
             switch (senha[i][x]) {
                 case 'a':
