@@ -32,7 +32,7 @@ int main() {
     carregaUsuarios(usuario, senha,cripto);
 
     while (escolha[0] != 's') {
-        printf("------Bem vindo!------\n\nO que deseja fazer?\n\n1 - Inclusao de Usuarios\n2 - Alterar Usuarios\n3 - Exclusao de Usuarios\n4 - Listagem de Usuarios\ns - Sair\n");
+        printf("|  ------Bem vindo!------  |\n|   O que deseja fazer?    |\n| 1 - Inclusao de Usuarios |\n| 2 - Alterar Usuarios     |\n| 3 - Exclusao de Usuarios |\n| 4 - Listagem de Usuarios |\n| s - Sair                 |\n| Escolha: ");
         fgets(escolha, sizeof(escolha), stdin);
         system("cls");
         switch (escolha[0]) {
@@ -41,25 +41,24 @@ int main() {
                 criptografa(senha, cripto);
                 break;
             case '2':
-               
-               do {
+                do {
                     system("cls");
                     printf("--------------------------------\n| Qual usuario deseja ALTERAR? |\n--------------------------------\n");
                     lista(usuario, senha, cripto);
+                    printf ("\n| Escolha: ");
                     scanf("%d", &escolhausuario);
                     if (escolhausuario < 1 || escolhausuario > nsenhas) {
-                        printf("Usuario invalido. Tente novamente.\n");
+                        printf("| Usuario invalido. Tente novamente. |\n");
                         getchar(); // Limpa o buffer
                         continue;
                     }
 
                     system("cls");
                     printf("--------------------------------\n| Qual usuario deseja ALTERAR? |\n--------------------------------\n");
-                    printf("Usuario escolhido: %d - (%s)\nConfirmar escolha?\n1 - Sim\n2 - Nao\n", escolhausuario, usuario[escolhausuario - 1]);
+                    printf("Usuario escolhido: %d - (%s)\n\n| Confirmar escolha? |\n| 1 - Sim            |\n| 2 - Nao            |\n| Escolha: ", escolhausuario, usuario[escolhausuario - 1]);
                     scanf("%d", &soun);
                     system("cls"); 
                 } while (soun != 1);
-
                 alterusuario(usuario, senha, senhaconfirma, escolhausuario);
                 criptografa(senha, cripto);
 
@@ -73,10 +72,11 @@ int main() {
                 
                 printf("--------------------------------\n| Qual usuario deseja EXCLUIR? |\n--------------------------------\n");
                 lista(usuario, senha, cripto);
+                printf ("\n| Escolha: ");
                 scanf("%d", &escolhausuario);
                 system("cls");
     
-                printf("Usuario escolhido: %d - (%s)\nConfirmar escolha?\n1 - Sim\n2 - Nao\n", escolhausuario, usuario[escolhausuario - 1]);
+                printf("Usuario escolhido: %d - (%s)\n\n| Confirmar escolha? |\n| 1 - Sim            |\n| 2 - Nao            |\n| Escolha: ", escolhausuario, usuario[escolhausuario - 1]);
                 scanf("%d", &soun);
                 system("cls"); 
                 if(soun==1){
@@ -125,7 +125,7 @@ int completra(char ch){// verificar se tem letra maiuscula
 void salvaUsuarios(char usuario[100][50], char senha[100][50]) {
     FILE *file = fopen("usuarios.txt", "w");
     if (file == NULL) {
-        printf("Erro ao abrir o arquivo para escrita.\n");
+        printf("| Erro ao abrir o arquivo para escrita. |\n");
         return;
     }
     
@@ -139,7 +139,7 @@ void salvaUsuarios(char usuario[100][50], char senha[100][50]) {
 void carregaUsuarios(char usuario[100][50], char senha[100][50], char cripto[100][200]) {
     FILE *file = fopen("usuarios.txt", "r");
     if (file == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
+        printf("| Erro ao abrir o arquivo. |\n");
         return;
     }
 
@@ -151,7 +151,7 @@ void carregaUsuarios(char usuario[100][50], char senha[100][50], char cripto[100
         criptografa(senha[nsenhas], cripto[nsenhas]); 
         nsenhas++;
         if (nsenhas >= 100) {
-            printf("Limite de usuarios atingido!\n");
+            printf("| Limite de usuarios atingido |\n");
             break;
         }
     }
@@ -166,7 +166,7 @@ void erroo(char senha[50], char confirmacao[50]) {// funcao paraa verificar TODO
     for (int x = 0; senha[x] != '\0'; x++) {
         if (senha[x] == ' ') { // ve se tem espaços
             erro = 1;
-            printf("A senha nao pode conter espaços...\n");
+            printf("| A senha nao pode conter espaços... |\n");
             return;
         }
         if (compespc(senha[x])) temEspecial = 1;
@@ -177,27 +177,27 @@ void erroo(char senha[50], char confirmacao[50]) {// funcao paraa verificar TODO
     
     if (!temEspecial) {//se nn tiver especial
         erro = 1;
-        printf("\nA senha deve conter pelo menos um caractere especial.\n");
+        printf("\n| A senha deve conter pelo menos um caractere especial. |\n");
         printf("Pressione Enter para continuar...");
         getchar();
     } else if (!temNumero) {//se nn tiver numero
         erro = 1;
-        printf("\nA senha deve conter pelo menos um numero.\n");
+        printf("\n| A senha deve conter pelo menos um numero. |\n");
         printf("Pressione Enter para continuar...");
         getchar();
     } else if (!temLetram) {//se nn tiver letra
         erro = 1;
-        printf("\nA senha deve conter pelo menos uma letra maiuscula.\n");
+        printf("\n| A senha deve conter pelo menos uma letra maiuscula. |\n");
         printf("Pressione Enter para continuar...");
         getchar();
     } else if (strcmp(senha, confirmacao) != 0) {//se senha!=confirmacao
         erro = 1;
-        printf("\nAs senhas nao conferem! Tente novamente.\n");
+        printf("\n| As senhas nao conferem! Tente novamente. |\n");
         printf("Pressione Enter para continuar...");
         getchar();
     }else if(strlen(senha)<8 || strlen(senha)>20){
         erro = 1;
-        printf("\nA senha deve ter no minimo 8 caracteres e no maximo 20 caracteres.\n");
+        printf("\n| A senha deve ter no minimo 8 caracteres e no maximo 20 caracteres. |\n");
         printf("Pressione Enter para continuar...");
         getchar();
     }
@@ -211,13 +211,14 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
     do {
         do { 
         e = 0;  
-        printf("\nUsuario: ");
+        printf ("----- Inclusao de Usuario -----");
+        printf("\n| Usuario: ");
         fgets(usuario[i], sizeof(usuario[i]), stdin);
         usuario[i][strcspn(usuario[i], "\n")] = '\0';
 
         for (x = i - 1; x > -1; x--) {
             if (strcmp(usuario[i], usuario[x]) == 0) {
-                printf("\nUsuario ja existe.\n");
+                printf("\n| Usuario ja existe. |\n");
                 printf("Pressione Enter para continuar...");
                 getchar();
                 e = 1;
@@ -226,19 +227,17 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
         }
         system("cls");
     } while (e == 1);
-               
-
 
         
         do {
-            printf("\nUsuario: %s",usuario[i]);
+            printf ("----- Inclusao de Usuario -----");
+            printf("\n| Usuario: %s",usuario[i]);
             erro = 0; // Reseta erro
-
-            printf("\nSenha: ");
+            printf("\n| Senha: ");
             fgets(senha[i], sizeof(senha[i]), stdin);
             senha[i][strcspn(senha[i], "\n")] = '\0';
 
-            printf("Confirme a senha: ");
+            printf("| Confirme a senha: ");
             fgets(senhaconfirma, 50, stdin);
             senhaconfirma[strcspn(senhaconfirma, "\n")] = '\0';
 
@@ -247,13 +246,13 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
             system("cls");
         } while (erro != 0);
 
-        printf("\nUsuario incluido com sucesso!");
+        printf("\n| Usuario incluido com sucesso! |");
         system("cls");
         nsenhas++;
 
         salvaUsuarios(usuario, senha);
 
-        printf("\nDeseja incluir mais usuarios?\n1 - Sim\n2 - Nao\n");
+        printf("\n| Deseja incluir mais usuarios? |\n| 1 - Sim                       | \n| 2 - Nao                       |\n| Escolha: ");
         scanf("%d", &simounao);
         getchar();
         system("cls");
@@ -265,9 +264,9 @@ void addusuario(char usuario[100][50], char senha[100][50], char senhaconfirma[5
 void lista(char usuario[100][50],char senha[100][50],char cripto[100][200]){ //funcao para listar usuarios
     for (int i = 0; i < nsenhas; i++) {
         printf("\n--------------------------------------------------------------------------------\n");
-        printf("%d - Usuario: %s\n", i+1,usuario[i]);
-        printf("     Senha: %s\n", senha[i]);
-        printf("     Criptografada: %s\n", cripto[i]);
+        printf("| %d - Usuario: %s\n", i+1,usuario[i]);                                          
+        printf("|     Senha: %s\n", senha[i]);
+        printf("|     Criptografada: %s\n", cripto[i]);
         printf("--------------------------------------------------------------------------------\n");
         }
 }
@@ -277,20 +276,22 @@ void alterusuario(char usuario[100][50], char senha[100][50], char senhaconfirma
     escolhausuario=escolhausuario-1;
 
     fflush(stdin);
-    printf("\nNovo nome de usuario: ");
+    printf ("----- Alteracao de Usuario -----");
+    printf("\n| Novo nome de usuario: ");
     fgets(usuario[escolhausuario], sizeof(usuario[escolhausuario]), stdin);
     usuario[escolhausuario][strcspn(usuario[escolhausuario], "\n")] = '\0';//adicionando /0 no ultimo caractere
     system("cls");
 
     do {
-        printf("\nNovo nome de usuario: %s",usuario[escolhausuario]);
+        printf ("----- Alteracao de Usuario -----");
+        printf("\n| Novo nome de usuario: %s",usuario[escolhausuario]);
         erro = 0; // Reseta erro
 
-        printf("\nNova senha: ");
+        printf("\n| Nova senha: ");
         fgets(senha[escolhausuario], sizeof(senha[escolhausuario]), stdin);
         senha[escolhausuario][strcspn(senha[escolhausuario], "\n")] = '\0';
 
-        printf("Confirme a nova senha: ");
+        printf("| Confirme a nova senha: ");
         fgets(senhaconfirma, 50, stdin);
         senhaconfirma[strcspn(senhaconfirma, "\n")] = '\0';
 
@@ -301,7 +302,7 @@ void alterusuario(char usuario[100][50], char senha[100][50], char senhaconfirma
 
     salvaUsuarios(usuario, senha);
 
-    printf("\nUsuario alterado com sucesso!");
+    printf("\n| Usuario alterado com sucesso! |");
     printf("\n\nPressione Enter para continuar...");
     getchar();
     system("cls");
@@ -313,7 +314,7 @@ void exclusu(char usuario[100][50], char senha[100][50], char cripto[100][200], 
     escolhausuario = escolhausuario - 1;
 
     if (escolhausuario >= nsenhas || escolhausuario < 0) {
-        printf("Usuario escolhido inválido\n");
+        printf("| Usuario escolhido inválido! |\n");
         return;
     }
 
@@ -330,7 +331,7 @@ void exclusu(char usuario[100][50], char senha[100][50], char cripto[100][200], 
 
     nsenhas--; 
     salvaUsuarios(usuario, senha); 
-    printf("Usuario excluido com sucesso!\n");
+    printf("| Usuario excluido com sucesso! |\n");
 }
 
 void criptografa(char senha[100][50], char cripto[100][200]) {//criptografia
